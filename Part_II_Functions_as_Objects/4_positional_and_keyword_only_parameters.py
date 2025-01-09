@@ -21,6 +21,14 @@ def tag(name, *content, class_=None, **attrs):
 def func_with_kword_only_param(a, *, b):  # every argument after * must be a keyword argument; using * by itself blocks using additional variable positional arguments
     return a, b
 
+
+# since Python 3.8, function signatures can also specify positional-only arguments
+# to do so, use / to separate positional-only arguments from the rest
+
+def divmod(a, b, /):  # all arguments to the left of '/' are positional-only, after that you can specify more arguments as usual
+    return a // b, a % b
+
+
 if __name__ == '__main__':
     print(tag('br'))  # empty tag with specified name
     print(tag('p', 'hello'))  # tag with content; any number of arguments after first will be captured into *content as a tuple
