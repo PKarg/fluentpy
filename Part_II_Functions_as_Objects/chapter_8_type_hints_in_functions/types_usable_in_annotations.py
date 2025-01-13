@@ -69,3 +69,39 @@ pet_any(d2)  # works
 # concrete classes from stdlib may also be used directly in type hints
 # just like classes from external packages and user defined classes
 # the same goes for Absctract Base Classes
+
+
+# Optional and Union Types
+# Optional[str] is equivalent to Union[str, None]
+# Since python 3.10 unin can be substituted with | operator
+# for example Union[int, str] is equivalent to int | str
+# the | also works with isinstance() and issubclass() functions
+# example
+x = 12
+print(isinstance(x, int | str))  # True
+# the same works with annotating function return type
+from typing import Union
+
+
+def parse_token(token: str) -> Union[str, float]:
+    try:
+        return float(token)
+    except ValueError:
+        return token
+
+
+# if possible, avoid functions that return Union types, but sometimes they may be necessary
+# Union requires at least two types. Unions are useful for types that are inconsistent.
+# Union[int, float] is redundant, as int is consistent-with float
+
+# Generic collections
+# collection types can be parameterized with types
+# ex. List[int], Dict[str, float], Tuple[int, str]
+
+# Tuple types
+# tuples - tuple[str, str, int]
+# named tuples - Point = namedtuple('Point', ['x', 'y']); x: Point
+# tuple with ellipsis - Tuple[int, ...] - tuple of ints with >= 1 elements
+
+# generic mappings
+# ...
