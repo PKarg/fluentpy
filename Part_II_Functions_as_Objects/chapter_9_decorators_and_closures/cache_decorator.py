@@ -61,6 +61,7 @@ def _(text: str) -> str:  # the name of the function doesn't matter
 # it's good idea to register specialized functions with ABCs instead of concrete implementations like int and list
 # in realistic use case you would not have all the implementations in the same module
 
+
 @htmlize.register
 def _(seq: abc.Sequence) -> str:
     inner = "</li>\n<li>".join(htmlize(item) for item in seq)
