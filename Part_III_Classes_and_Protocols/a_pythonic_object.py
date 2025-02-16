@@ -1,10 +1,18 @@
 from array import array
 import math
 
+import pytest
+
 
 class Vector2d:
     typecode = "d"  # used for converting to and from bytes
     __match_args__ = ("x", "y")
+    __slots__ = (
+        "__x",
+        "__y",
+    )  # slots change the way instance attributes are stored - from dict to, in this case, a tuple
+    # if __slots__ are present without explicit __dict__ in __slots__, __dict__ is not created and is not available
+    # because of that you can't use 'cached_property' decorator, if you want to use it, you need to add __dict__ to __slots__
 
     @classmethod
     def frombytes(cls, octets: bytes) -> "Vector2d":
@@ -99,3 +107,34 @@ def test_vector2d_pattern_match():
                 assert x < y
             case _:
                 assert False, "unexpected match"
+
+
+def test_vector_slots_no_dict():
+    with pytest.raises(AttributeError):
+        v1 = Vector2d(3, 4)
+        v1.__dict__
+
+
+class ShortVector2d(Vector2d):
+    # no slots declared, so __dict__ is available
+    typecode = "f"
+
+
+def test_short_vector_dict():
+    v1 = ShortVector2d(3, 4)
+    v2 = Vector2d(3, 4)
+
+    assert v1.__dict__ == {}  # empty, because __x and __y stored in tuple slot
+    with pytest.raises(AttributeError):
+        v2.__dict__
+
+    dumpd = bytes(v2)
+    dumpf = bytes(v1)
+    assert len(dumpd) != len(dumpf)
+    assert len(dumpd) > len(dumpf)
+
+    v1.test = 1  # for ShortVector2d you can add instance attribute during runtime because __dict__ is available
+    # it can be unexpected behavior, so you need to be mindful when inheriting class with __slots__ from a class without __slots__
+    assert v1.__dict__ == {"test": 1}
+    with pytest.raises(AttributeError):
+        v2.test = 1
